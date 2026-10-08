@@ -74,6 +74,9 @@
     <ClCompile Include="Spherical.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="CircleFollow.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -157,6 +160,7 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.h">
       <Filter>KamataEngine\Adapter\Include</Filter>
     </ClInclude>
+    <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Collision.h">
@@ -206,6 +210,9 @@
       <Filter>KamataEngine</Filter>
     </ClInclude>
     <ClInclude Include="Spherical.h">
+      <Filter>KamataEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleFollow.h">
       <Filter>KamataEngine</Filter>
     </ClInclude>
   </ItemGroup>

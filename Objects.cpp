@@ -88,6 +88,8 @@ Objects::Objects() {
 	};
 }
 
+Objects::~Objects() = default;
+
 #pragma region Color
 namespace {
 

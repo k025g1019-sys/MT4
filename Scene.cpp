@@ -81,7 +81,7 @@ void TitleScene::Draw() {}
 
 #pragma region Initialize
 GameScene::GameScene() {
-	objects = new Objects;
+	objects = std::make_unique<Objects>();
 	viewProjectionMatrix = MakePerspectiveFovMatrix(0.50f, 1280.0f / 720.0f, 0.1f, 2000.0f);
 	viewportMatrix = MakeViewportMatrix(0, 0, 1280.0f, 720.0f, 0.0f, 2000.0f);
 }
@@ -110,6 +110,22 @@ void GameScene::Update(SceneManager& manager) {
 #pragma endregion
 
 	camera.Update(kWindowWidth, kWindowHeight, viewProjectionMatrix, viewportMatrix, keys);
+
+#pragma region 球面座標
+
+	// 距離0・真上・真下ではカメラの前Fや右Rが決まらないため、計算前にクランプする
+	const float limit = std::numbers::pi_v<float> / 2.0f - 0.01f;
+	// Windows.hのmaxマクロと衝突しないよう、(std::max)と括弧で囲む
+	spherical.radius = (std::max)(spherical.radius, 0.1f);
+	spherical.theta = std::clamp(spherical.theta, -limit, limit);
+
+	// 球面座標を直交座標に変換し、注視点に足してカメラ位置を求める
+	Vector3 target{0.0f, 0.0f, 0.0f};
+	sphericalEye = target + ToCartesian(spherical);
+	// 注視点を向くカメラ行列を作る
+	sphericalCameraMatrix = MakeLookAtCameraMatrix(sphericalEye, target);
+
+#pragma endregion
 }
 #pragma endregion
 
@@ -150,26 +166,16 @@ void GameScene::Draw() {
 	ImGui::InputFloat("Theta: elevation (rad)", &spherical.theta, 0.01f, 0.1f, "%.3f");
 	ImGui::InputFloat("Phi (rad)", &spherical.phi, 0.01f, 0.1f, "%.3f");
 
-	// 距離0・真上・真下ではカメラの前Fや右Rが決まらないため、操作後にクランプする
-	const float limit = std::numbers::pi_v<float> / 2.0f - 0.01f;
-	// Windows.hのmaxマクロと衝突しないよう、(std::max)と括弧で囲む
-	spherical.radius = (std::max)(spherical.radius, 0.1f);
-	spherical.theta = std::clamp(spherical.theta, -limit, limit);
-
-	// 球面座標を直交座標に変換し、注視点に足してカメラ位置を求める
-	Vector3 target{0.0f, 0.0f, 0.0f};
-	Vector3 eye = target + ToCartesian(spherical);
-	// 注視点を向くカメラ行列を作る
-	Matrix4x4 cameraMatrix = MakeLookAtCameraMatrix(eye, target);
-
+	// 変換結果とカメラ行列はUpdateで計算済みのものを表示する
 	ImGui::Separator();
 	ImGui::Text("Spherical: r = %.3f, theta = %.3f rad, phi = %.3f rad", spherical.radius, spherical.theta, spherical.phi);
-	ImGui::Text("Cartesian: x = %.3f, y = %.3f, z = %.3f", eye.x, eye.y, eye.z);
+	ImGui::Text("Cartesian: x = %.3f, y = %.3f, z = %.3f", sphericalEye.x, sphericalEye.y, sphericalEye.z);
 	ImGui::Separator();
 
 	ImGui::Text("Camera matrix");
 	for (int row = 0; row < 4; ++row) {
-		ImGui::Text("%8.3f  %8.3f  %8.3f  %8.3f", cameraMatrix.m[row][0], cameraMatrix.m[row][1], cameraMatrix.m[row][2], cameraMatrix.m[row][3]);
+		ImGui::Text(
+		    "%8.3f  %8.3f  %8.3f  %8.3f", sphericalCameraMatrix.m[row][0], sphericalCameraMatrix.m[row][1], sphericalCameraMatrix.m[row][2], sphericalCameraMatrix.m[row][3]);
 	}
 
 	ImGui::End();
@@ -181,5 +187,19 @@ void GameScene::Draw() {
 }
 
 #pragma endregion
+
+#pragma endregion
+
+#pragma region FollowScene
+
+void FollowScene::Update(SceneManager&) { circleFollow.Update(); }
+
+void FollowScene::Draw() {
+	circleFollow.Draw();
+
+#ifdef _DEBUG
+	circleFollow.DrawImGui();
+#endif
+}
 
 #pragma endregion

@@ -10,7 +10,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
 	SceneManager manager;
-	manager.SetScene(std::make_unique<GameScene>());
+	manager.SetScene(std::make_unique<FollowScene>());
 
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};

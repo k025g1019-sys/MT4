@@ -18,6 +18,8 @@ class ConicalPendulum;
 class Objects {
 public:
 	Objects();
+	// メンバのvectorの要素型はここでは前方宣言だけなので、解放処理は型が揃っているObjects.cppで定義する
+	~Objects();
 	void UpdateAllCollisions();
 	void Draw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 #ifdef _DEBUG

@@ -208,13 +208,27 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 
 // 注視点を向くカメラのワールド行列
 Matrix4x4 MakeLookAtCameraMatrix(const Vector3& eye, const Vector3& target) {
-	// 世界の上方向
+	// 世界の上方向と奥方向
 	Vector3 worldUp{0.0f, 1.0f, 0.0f};
+	Vector3 worldForward{0.0f, 0.0f, 1.0f};
+	// 長さがほぼ0とみなす値(Normalizeの0除算防止と揃える)
+	const float kEpsilon = 1e-6f;
 
 	// 1. カメラ位置から注視点へ向かう向きが、カメラの前F
-	Vector3 forward = Normalize(target - eye);
+	Vector3 forward = target - eye;
+	// カメラ位置と注視点が同じ(極めて近い)と向きが決まらないので、世界の奥を向かせる
+	if (Length(forward) < kEpsilon) {
+		forward = worldForward;
+	}
+	forward = Normalize(forward);
+
 	// 2. 世界の上と前Fの外積で、カメラの右R
-	Vector3 right = Normalize(Cross(worldUp, forward));
+	Vector3 right = Cross(worldUp, forward);
+	// 真上・真下を向くと世界の上と前Fが平行になり外積が0になるので、世界の奥を基準にする
+	if (Length(right) < kEpsilon) {
+		right = Cross(worldForward, forward);
+	}
+	right = Normalize(right);
 	// 3. 前Fと右Rの外積で、カメラ自身の上U(FとRは直交する長さ1のベクトルなので正規化は不要)
 	Vector3 up = Cross(forward, right);
 

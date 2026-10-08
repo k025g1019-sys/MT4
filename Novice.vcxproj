@@ -171,6 +171,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CircleFollow.cpp" />
     <ClCompile Include="CircularMotion.cpp" />
     <ClCompile Include="ConicalPendulum.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -220,6 +221,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CircleFollow.h" />
     <ClInclude Include="CircularMotion.h" />
     <ClInclude Include="ConicalPendulum.h" />
     <ClInclude Include="Collision.h" />
@@ -237,6 +239,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Spherical.h" />
     <ClInclude Include="Spring.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
